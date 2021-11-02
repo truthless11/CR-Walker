@@ -1,15 +1,15 @@
 # CR-Walker
 
-Code implementation for our paper "Bridging the Gap between Conversational Reasoning and Interactive Recommendation". 
+Code for paper "CR-Walker: Conversational Recommender System with Tree-structured Graph Reasoning and Dialog Acts" EMNLP 2021.
 
 you can find our paper at [arxiv](https://arxiv.org/abs/2010.10333).
 
 Cite this paper:
 
 ```
-@article{ma2020bridging,
-      title={Bridging the Gap between Conversational Reasoning and Interactive Recommendation}, 
-      author={Wenchang Ma and Ryuichi Takanobu and Minghao Tu and Minlie Huang},
+@article{ma2021crwalker,
+      title={CR-Walker: Tree-Structured Graph Reasoning and Dialog Acts for Conversational Recommendation}, 
+      author={Wenchang Ma and Ryuichi Takanobu and Minlie Huang},
       journal={arXiv preprint arXiv:2010.10333},
       year={2020}
 }
@@ -19,7 +19,7 @@ Cite this paper:
 
 ## Data
 
-- [google link](https://drive.google.com/file/d/1YtJWDZI9ZHPCtVvrE1GiS7Ilb8pTn8KK/view?usp=sharing) to raw data and our model checkpoints. Zipped content:
+- [google link](https://drive.google.com/drive/folders/1Jg65ibsj_2tybZyCQnGD7y9a80FlCX61?usp=sharing) to raw data and our model checkpoints (model checkpoints and generation models will be released soon!). Table of content: 
 
   ```
   CR-Walker
@@ -33,42 +33,57 @@ Cite this paper:
   └─saved
   ```
 
-- download and unzip to [your home directory]/CR-Walker/.
+- download to [your home directory]/CR-Walker/.
 
 ## Train
 
 - **For GoRecdial**: 
 
   ```
-  python train_gorecdial.py --option train --model_name <your_model_name>
+  python train_gorecdial.py --option train --model_name <your_model_name> --pretrain
   ```
 
 - **For Redial**: 
 
   ```
-  python train_redial.py --option train --model_name <your_model_name> --pretrain
+  python train_redial.py --option train --model_name <your_model_name> --pretrain 
   ```
 
-  *We implemented an MIM pretraining stage similar to [KGSF](https://arxiv.org/abs/2007.04032) to accelerate training. 
+  We implemented an MIM pretraining stage similar to [KGSF](https://arxiv.org/abs/2007.04032) to accelerate training. Also, we provided option of adding wordnet features by adding "--word_net" as command line option.
 
 
-
-## Test
+## Test Recommendation
 
 - **For GoRecdial**
 
   ```
-  python train_gorecdial.py --option test --model_name gorecdial_128
+  python train_gorecdial.py --option test --model_name gorecdial_128_reason
   ```
 
 - **For Redial**:  
 
   ```
-  python train_redial.py --option test --model_name redial_128
+  python train_redial.py --option test --model_name redial_128_reason
   ```
 
-You can directly evaluate the best model checkpoints for the two datasets that we provided. The results may slightly differ from the paper since we re-trained the model.
+  You can directly evaluate the best model checkpoints for the two datasets that we provided. The results may slightly differ from the paper since we re-trained the model. Note that the reasoning width('sample' argument in **conf.py**) has been set to 1 for speed during training. You can tune it larger along with the selection threshold(('threshold' argument in **conf.py**)) to yield better performance.
 
+
+## Test Generation
+
+- **For GoRecdial**
+
+  ```
+  python train_gorecdial.py --option test_gen --model_name gorecdial_128_reason
+  ```
+
+- **For Redial**:  
+
+  ```
+  python train_redial.py --option test_gen --model_name redial_128_reason
+  ```
+
+  Similarly, you can tune the selection threshold, reasoning width and max number of leaf nodes('max_leaf' argument in **conf.py**) to control generation. 
 
 
 ## Requirements

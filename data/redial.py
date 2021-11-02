@@ -1,4 +1,4 @@
-from torch_geometric.data import InMemoryDataset, Dataset, download_url, Data
+from torch_geometric.data import InMemoryDataset, Dataset, download_url, Data,DataLoader
 import os.path as osp
 import numpy as np
 import json
@@ -51,8 +51,6 @@ class ReDial(InMemoryDataset):
         relations_names=['time', 'director', 'starring', 'genre', 'subject', 'belong', 'timeR', 'directorR', 'starringR', 'genreR', 'subjectR', 'belongR']
         type_names = ["Candidate","Movie","Actor","Director","Genre","Time","Attr","Subject","None"]
         rec_list = []
-        #rec_list_train=[]
-        #rec_list_train_one_hot=[]
 
         for q,flag in enumerate(flags):
             data_list = []
@@ -69,11 +67,11 @@ class ReDial(InMemoryDataset):
                     if reason_path[idx+1]['dialog_num']!=reason_path[idx]['dialog_num']:
                         last_turn=1
                 processed_1=reason_path[idx]['node_candidate1']
-                if reason_path[idx]['intent']=="recommend":
-                    if -1 not in reason_path[idx]['node_candidate1']:
-                        processed_1=[-1]
                 key=str(reason_path[idx]['dialog_num'])+"_"+str(reason_path[idx]['system_turn'])
-                data=Data(dialog_history=reason_path[idx]['context'],oracle_response=reason_path[idx]['utterance'],mention_history=reason_path[idx]['mentioned'],node_candidate1=processed_1,label_1=reason_path[idx]['label_1'],node_candidate2=reason_path[idx]['node_candidate2'],label_2=reason_path[idx]['label_2'],intent=reason_path[idx]['intent'],new_mention=reason_path[idx]['new_mentioned'],my_id=key,last_turn=last_turn)
+                if reason_path[idx]['intent']=="recommend":
+                    data=Data(dialog_history=reason_path[idx]['context'],oracle_response=reason_path[idx]['utterance'],mention_history=reason_path[idx]['mentioned'],node_candidate1=reason_path[idx]['node_candidate1'],label_1=reason_path[idx]['label_1'],node_candidate2=reason_path[idx]['node_candidate2'],label_2=reason_path[idx]['label_2'],intent=reason_path[idx]['intent'],new_mention=reason_path[idx]['new_mentioned'],my_id=key,last_turn=last_turn,gold_pos=reason_path[idx]['gold_pos'],label_rec=reason_path[idx]['label_rec'])
+                else:
+                    data=Data(dialog_history=reason_path[idx]['context'],oracle_response=reason_path[idx]['utterance'],mention_history=reason_path[idx]['mentioned'],node_candidate1=reason_path[idx]['node_candidate1'],label_1=reason_path[idx]['label_1'],node_candidate2=reason_path[idx]['node_candidate2'],label_2=reason_path[idx]['label_2'],intent=reason_path[idx]['intent'],new_mention=reason_path[idx]['new_mentioned'],my_id=key,last_turn=last_turn,gold_pos=[],label_rec=[])
                 if self.pre_filter is not None and not self.pre_filter(data):
                     continue
                 if self.pre_transform is not None:
@@ -132,4 +130,11 @@ if __name__ == "__main__":
     root=osp.dirname(osp.dirname(osp.abspath(__file__)))
     path=osp.join(root,"data","redial")
     dataset=ReDial(path,flag="test")
-    print(dataset[0])
+    data=dataset[10]
+    print(data.intent)
+    print(data.node_candidate1)
+    print(data.label_1)
+    print(data.node_candidate2)
+    print(data.label_2)
+
+    

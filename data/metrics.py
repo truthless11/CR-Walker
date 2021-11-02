@@ -25,6 +25,7 @@ def normalize_answer(s):
     #return white_space_fix(remove_articles(remove_punc(lower(s))))
     return white_space_fix(remove_punc(lower(s)))
 
+
 def bleu(guess, answers):
     """Compute approximate BLEU score between guess and a set of answers."""
     if nltkbleu is None:
@@ -73,27 +74,17 @@ def f1_score(guess, answers):
 
 
 def dist_str(n, hyps):
-    #print(hyps)
-    #print(n)
     all_scores = []
     for hyp in hyps:
         if '<EOS>' in hyp:
             index = hyp.index('<EOS>')
             hyp = hyp[:index]
-        #print(hyp)
         sentence = hyp.split()
-        #sentence = sentence.split(" ")
-        
 
         distinct_ngrams = set(ngrams(sentence, n))
-        #print(distinct_ngrams)
         if len(list(ngrams(sentence, n)))!=0:
             score = len(distinct_ngrams) / len(list(ngrams(sentence, n)))
             all_scores.append(score)
-
-        #print(score)
-        
-        #input()
 
     return all_scores
 
@@ -119,59 +110,3 @@ def distinct_n_grams(tokenized_lines, n):
         total_len+=len(item)
 
     return len(set(n_grams_all)), len(set(n_grams_all)) / total_len#len(tokenized_lines)
-
-
-if __name__ == '__main__':
-    import json
-    import os.path as osp
-    root=osp.dirname(osp.dirname(osp.abspath(__file__)))
-    #path=osp.join(root,"saved","all_gen.json")
-    path=osp.join(root,"saved","redial_gen_e2e.json")  
-    with open(path, 'r') as f:
-        data_gen = json.load(f)
-    
-    with open('mid2name_redial.json','r') as f:
-    #with open('mid2name_gorecdial.json','r') as f:
-        mid2name=json.load(f)
-    a=[]
-
-    #model='CR_Walker'
-    # all_lines=[[] for _ in range(1341)]
-    # #line=[]
-    # for key,value in data.items():
-    #     dialog_num=int(key.split("_")[0])
-    #     all_lines[dialog_num].append(value[model].strip())
-
-    #lines = [item[model].strip() for item in data.values()]
-    #data = [[item['Human'].strip(), item[model].strip()] for item in data.values()]
-    lines = [item['generated'].strip() for item in data_gen.values()]
-    # data=[]
-    # for item in data_gen.values():
-    #     gen=item['generated'].split("&")
-    #     generate=""
-    #     for sent in gen:
-    #         rep=sent.replace("@"," ")
-    #         if "(" not in rep and ")" not in rep:
-    #             generate=rep
-    #     data.append([item['label'].strip(),generate.strip()])
-
-    bleu_array = []
-    f1_array = []
-    
-    k=0
-    for item in data_gen.values():
-        k+=1
-        ground, generate = [item['label']], item['generated']
-        bleu_array.append(bleu(generate, ground))
-        f1_array.append(f1_score(generate, ground))
-    print("BLEU:",np.mean(bleu_array))
-    print("F1:",np.mean(f1_array))
-
-
-    tokenized = [line.split() for line in lines]
-
-
-    for n in range(1, 6):
-        cnt, percent = distinct_n_grams(tokenized, n)
-        print(f'Distinct {n}-grams (cnt, percentage) = ({cnt}, {percent:.3f})')
-    

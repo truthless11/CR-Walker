@@ -17,7 +17,7 @@ import numpy as np
 import sys
 import os.path as osp
 import json
-sys.path.append("/home/mawenchang/PROREC-Torch")
+sys.path.append("..")
 from data.utils import da_tree_serial,utter_lexical_redial,utter_lexical_gorecdial
 from data.redial import ReDial
 from data.gorecdial import GoRecDial
@@ -76,7 +76,7 @@ def sample_sequence(model, length, context, num_samples=1, temperature=1, top_k=
     context = context.unsqueeze(0).repeat(num_samples, 1)
     generated = context
     with torch.no_grad():
-        for _ in trange(length):
+        for _ in range(length):
 
             inputs = {'input_ids': generated}
 
@@ -94,6 +94,7 @@ def sample_sequence(model, length, context, num_samples=1, temperature=1, top_k=
                 next_token = torch.multinomial(F.softmax(filtered_logits, dim=-1), num_samples=1)
             generated = torch.cat((generated, next_token), dim=1)
     return generated
+    
 
 
 set_seed(42)
@@ -138,111 +139,4 @@ class Generator():
             text = self.tokenizer.decode(o, clean_up_tokenization_spaces=True)
             text = text[: text.find(stop_token) if stop_token else None]
 
-            #print(text)
-
         return text
-
-
-if __name__ == '__main__':
-    root=osp.dirname(osp.dirname(osp.abspath(__file__)))
-    save_path=osp.join(root,"saved",'gorecdial_DA.json')
-    data_path=osp.join(root,"data","gorecdial")
-    #data_path=osp.join(root,"data","redial")
-    generate_path=osp.join(root,"saved","gorecdial_gen.json")
-    #context_path=osp.join(root,"saved","context.json")
-
-    #dataset=ReDial(data_path,flag="test")
-    dataset=GoRecDial(data_path,flag="test")
-    #f=open(generate_path)
-    #generate_all=json.load(f)
-    generate_all={}
-    #print(len(dataset))
-    f=open(save_path)
-    das=json.load(f)
-    #print(len(das))
-    #with open('/home/mawenchang/PROREC-Torch/data/id2name_redial.json', 'r') as f:
-    with open('/home/mawenchang/PROREC-Torch/data/id2name_gorecdial.json', 'r') as f:
-        id2name = json.load(f)
-    #with open('/home/mawenchang/PROREC-Torch/data/mid2name_redial.json', 'r') as f:
-    with open('/home/mawenchang/PROREC-Torch/data/mid2name_gorecdial.json', 'r') as f:
-        mid2name = json.load(f)
-    # f=open(generate_path)
-    # gens=json.load(f)
-    # for key,value in gens.items():
-    #       gens[key]['KBRD']=value['KBRD'].lower()
-    #       gens[key]['DCR']=value['DCR'].lower()
-    #       gens[key]['Human']=value['Human'].lower()
-    #       gens[key]['REDIAL']=value['REDIAL'].lower()
-    # #     gens[key]['KBRD']=utter_lexical_redial_kbrd(value['KBRD'],mid2name)
-    # #     #input()
-    # f=open(generate_path,'w')
-    # json.dump(gens,f)
-
-
-
-    #-----------------------------------------------------
-    # root=osp.dirname(osp.dirname(osp.abspath(__file__)))
-    # save_path=osp.join(root,"saved",'redial_DA_new.json')
-    # data_path=osp.join(root,"data","redial")
-    # generate_path=osp.join(root,"saved","redial_gen_intent.json")
-
-    
-    # dataset=ReDial(data_path,flag="test")
-    # #f=open(generate_path)
-    # #generate_all=json.load(f)
-    # generate_all={}
-    # print(len(dataset))
-    # f=open(save_path)
-    # das=json.load(f)
-    # #print(len(das))
-    # with open('/home/mawenchang/PROREC-Torch/data/id2name_redial.json', 'r') as f:
-    #     id2name = json.load(f)
-    # with open('/home/mawenchang/PROREC-Torch/data/mid2name_redial.json', 'r') as f:
-    #     mid2name = json.load(f)
-    # context={}
-    for i,item in enumerate(das):
-    #     con=dataset[i].dialog_history
-    #     for j in range(len(con)):
-    #         con[j]=utter_lexical_redial(con[j],mid2name)
-    #     key=dataset[i].my_id
-    #     context[key]=con
-    #     print(key)
-    #     print(con)
-    #     input()
-    
-    # f=open(context_path,'w')
-    # json.dump(context,f)
-        if item['key'] in generate_all.keys():
-            #data=generate_all[item['key']]
-            context=dataset[i].dialog_history
-            #for turn in context:
-                #print(utter_lexical_redial(turn,mid2name))
-            #print(colored(utter_lexical_redial(data['label'],mid2name),'green'))
-            #print(colored(data['generated'],'red'))
-            #input()
-            #continue
-        #print(item['key'])
-        #print(dataset[i].my_id)
-        DA=da_tree_serial(item,id2name)
-        #context=""
-        #print(dataset[i].dialog_history)
-        if len(dataset[i].dialog_history)!=0:
-            context=dataset[i].dialog_history[-1]
-        else:
-            context="hello"
-        #context=utter_lexical_redial(context,mid2name)
-        context=utter_lexical_gorecdial(context,mid2name)
-        gpt_in=context+" @ "+DA+" &"
-        #gpt_in=context+"@"+item['intent']+" &" 
-        print(gpt_in.lower())
-        generated=generate(gpt_in.lower())
-        print(utter_lexical_gorecdial(dataset[i].oracle_response,mid2name))
-        cur_turn={"generated":generated,"label":utter_lexical_gorecdial(dataset[i].oracle_response,mid2name)}
-        generate_all[item['key']]=cur_turn
-        if (i+1) % 50 ==0:
-            print("saving results...")
-            with open(generate_path,'w') as f:
-                json.dump(generate_all,f)
-    print("saving results...")
-    with open(generate_path,'w') as f:
-        json.dump(generate_all,f)

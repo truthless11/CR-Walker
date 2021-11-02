@@ -24,11 +24,6 @@ class GoRecDial(InMemoryDataset):
 
         self.train_size=8213
         self.test_size=909
-        #f=open(self.raw_paths[0],'r')
-        #names=json.load(f)
-        #all_names=names['train']+names['test']
-        #self.train_turns=len(names['train'])
-        #self.test_turns=len(names['test'])
 
     @property
     def raw_file_names(self):
@@ -36,9 +31,6 @@ class GoRecDial(InMemoryDataset):
 
     @property
     def processed_file_names(self):
-        # f=open(self.raw_paths[0],'r')
-        # names=json.load(f)
-        # all_names=names['train']+names['test']
         return ['train.pt','test.pt','graph.pt','bow.pt']
 
     def download(self):
@@ -81,13 +73,9 @@ class GoRecDial(InMemoryDataset):
                 else:
                     if reason_path[idx+1]['dialog_num']!=reason_path[idx]['dialog_num']:
                         last_turn=1
-                processed_1=reason_path[idx]['node_candidate1']
-                if reason_path[idx]['intent']=="recommend":
-                    if -1 not in reason_path[idx]['node_candidate1']:
-                        processed_1=[-1]
                 key=str(reason_path[idx]['dialog_num'])+"_"+str(reason_path[idx]['system_turn'])
 
-                data=Data(dialog_history=reason_path[idx]['context'],oracle_response=reason_path[idx]['utterance'],mention_history=reason_path[idx]['mentioned'],intent=reason_path[idx]['intent'],node_candidate1=reason_path[idx]['node_candidate1'],label_1=reason_path[idx]['label_1'],label_c=reason_path[idx]['label_c'],node_candidate2=reason_path[idx]['node_candidate2'],label_2=reason_path[idx]['label_2'],rec_cand=reason_path[idx]['rec_cand'],my_id=key,last_turn=last_turn)
+                data=Data(dialog_history=reason_path[idx]['context'],oracle_response=reason_path[idx]['utterance'],mention_history=reason_path[idx]['mentioned'],intent=reason_path[idx]['intent'],node_candidate1=reason_path[idx]['node_candidate1'],label_1=reason_path[idx]['label_1'],label_c=reason_path[idx]['label_c'],node_candidate2=reason_path[idx]['node_candidate2'],label_2=reason_path[idx]['label_2'],rec_cand=reason_path[idx]['rec_cand'],new_mention=reason_path[idx]['new_mentioned'],my_id=key,last_turn=last_turn)
 
 
                 
@@ -154,45 +142,13 @@ class GoRecDial(InMemoryDataset):
         data, slices = self.collate(data_list)
         torch.save((data, slices), self.processed_paths[3])
 
-            #torch.save(data, osp.join(self.processed_dir, 'data_{}.pt'.format(i)))
-    
-    # def retrieve_raw(self, flag, idx):
-    #     match_result_path=self.raw_paths[1]
-    #     raw_DA_path=self.raw_paths[2]
-    #     subgraph_path=self.raw_paths[3]
-        
-    #     my_match_result=osp.join(match_result_path,flag,"matched_nodes"+str(idx)+".json")
-    #     f=open(my_match_result)
-    #     my_match_result=json.load(f)
-
-    #     my_raw_DA=osp.join(raw_DA_path,flag,str(idx)+".json")
-    #     f=open(my_raw_DA)
-    #     #print(idx)
-    #     my_raw_DA=json.load(f)
-
-
-    #     my_subgraph=osp.join(subgraph_path,flag,flag+str(idx)+".json")
-    #     f=open(my_subgraph)
-    #     my_subgraph=json.load(f)
-
-    #     return my_raw_DA,my_match_result,my_subgraph
-
-    # def len(self):
-    #     if self.flag=="train":
-    #         return self.train_turns
-    #     else:
-    #         return self.test_turns
-
-    # def get(self, idx):
-    #     if self.flag=="train":
-    #         data = torch.load(osp.join(self.processed_dir, 'train_{}.pt'.format(idx)))
-    #     else:
-    #         data =torch.load(osp.join(self.processed_dir, 'test_{}.pt'.format(idx)))
-    #     return data
-
 if __name__ == "__main__":
     root=osp.dirname(osp.dirname(osp.abspath(__file__)))
     path=osp.join(root,"data","gorecdial")
     dataset=GoRecDial(path,flag="test")
     data=dataset[10]
-    print(data.mention_history)
+    print(data.intent)
+    print(data.node_candidate1)
+    print(data.label_1)
+    print(data.node_candidate2)
+    print(data.label_2)
