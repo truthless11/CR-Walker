@@ -66,7 +66,7 @@ Cite this paper:
   python train_redial.py --option test --model_name redial_128_reason
   ```
 
-  You can directly evaluate the best model checkpoints for the two datasets that we provided. The results may slightly differ from the paper since we re-trained the model. Note that the reasoning width('sample' argument in **conf.py**) has been set to 1 for speed during training. You can tune it larger along with the selection threshold(('threshold' argument in **conf.py**)) to yield better performance.
+  You can directly evaluate the best model checkpoints for the two datasets that we provided. The results may slightly differ from the paper since we re-trained the model. Note that the reasoning width (*'sample'* argument in **conf.py**) has been set to 1 for speed during training. You can tune it larger along with the selection threshold (*'threshold'* argument in **conf.py**) to yield better performance.
 
 
 ## Test Generation
@@ -83,7 +83,7 @@ Cite this paper:
   python train_redial.py --option test_gen --model_name redial_128_reason
   ```
 
-  Similarly, you can tune the selection threshold, reasoning width and max number of leaf nodes('max_leaf' argument in **conf.py**) to control generation. 
+  Similarly, you can tune the selection threshold, reasoning width and max number of leaf nodes (*'max_leaf'* argument in **conf.py**) to control generation. 
 
 
 ## Requirements
