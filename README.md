@@ -19,7 +19,7 @@ Cite this paper:
 
 ## Data
 
-- [google link](https://drive.google.com/drive/folders/1Jg65ibsj_2tybZyCQnGD7y9a80FlCX61?usp=sharing) to raw data and our model checkpoints (model checkpoints and generation models will be released soon!). Table of content: 
+- [google link](https://drive.google.com/drive/folders/1Jg65ibsj_2tybZyCQnGD7y9a80FlCX61?usp=sharing) to raw data and our model checkpoints (generation models will be released soon!). Table of content: 
 
   ```
   CR-Walker
@@ -57,13 +57,13 @@ Cite this paper:
 - **For GoRecdial**
 
   ```
-  python train_gorecdial.py --option test --model_name gorecdial_128_reason
+  python train_gorecdial.py --option test --model_name gorecdial_reason_128
   ```
 
 - **For Redial**:  
 
   ```
-  python train_redial.py --option test --model_name redial_128_reason
+  python train_redial.py --option test --model_name redial_reason_128
   ```
 
   You can directly evaluate the best model checkpoints for the two datasets that we provided. The results may slightly differ from the paper since we re-trained the model. Note that the reasoning width (*'sample'* argument in **conf.py**) has been set to 1 for speed during training. You can tune it larger along with the selection threshold (*'threshold'* argument in **conf.py**) to yield better performance.
@@ -74,13 +74,13 @@ Cite this paper:
 - **For GoRecdial**
 
   ```
-  python train_gorecdial.py --option test_gen --model_name gorecdial_128_reason
+  python train_gorecdial.py --option test_gen --model_name gorecdial_reason_128
   ```
 
 - **For Redial**:  
 
   ```
-  python train_redial.py --option test_gen --model_name redial_128_reason
+  python train_redial.py --option test_gen --model_name redial_reason_128
   ```
 
   Similarly, you can tune the selection threshold, reasoning width and max number of leaf nodes (*'max_leaf'* argument in **conf.py**) to control generation. 
