@@ -7,11 +7,13 @@ you can find our paper at [arxiv](https://arxiv.org/abs/2010.10333).
 Cite this paper:
 
 ```
-@article{ma2021crwalker,
-      title={CR-Walker: Tree-Structured Graph Reasoning and Dialog Acts for Conversational Recommendation}, 
-      author={Wenchang Ma and Ryuichi Takanobu and Minlie Huang},
-      journal={arXiv preprint arXiv:2010.10333},
-      year={2020}
+@inproceedings{ma2021crwalker,
+  title={CR-Walker: Tree-Structured Graph Reasoning and Dialog Acts for Conversational Recommendation},
+  author={Ma, Wenchang and Takanobu, Ryuichi and Huang, Minlie},
+  booktitle={Proceedings of the 2021 Conference on Empirical Methods in Natural Language Processing},
+  pages={1839--1851},
+  year={2021},
+  organization={ACL}
 }
 ```
 
