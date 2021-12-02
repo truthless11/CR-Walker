@@ -659,7 +659,7 @@ def evaluate_gen_gorecdial(test_loader:DataLoader, model:ProRec, graph_data, bow
                 step1=step1.cpu().numpy()
                 step_grp=sel_group_indices[0].cpu().numpy()
                 
-                sel_index_2,grp_index_2,batch_index_2,intent_index_2,grp_bat_index_2,last_index_2,score_mask_2,node_candidate2,selected_1,all_split=select_layer_1(args['nodes'],step1,step_grp,intent_label,test_batch.node_candidate1,test_batch.label_1,test_batch.mention_history,args,test_batch.rec_cand)
+                sel_index_2,grp_index_2,batch_index_2,intent_index_2,grp_bat_index_2,last_index_2,score_mask_2,node_candidate2,selected_1,all_split=select_layer_1(args['nodes'],step1,step_grp,intent_label,test_batch.node_candidate1,test_batch.label_1,test_batch.mention_history,args,test_batch.rec_cand,dataset="gorecdial")
                 step2,_,_=model.inference_gorecdial(intent_index_2,tokenized_dialog,all_length,maxlen,init_hidden,edge_type,edge_index,mention_index,mention_batch_index,sel_index_2,batch_index_2,grp_index_2,grp_bat_index_2,last_index_2,score_mask_2,word_index,word_batch_index,last_weights=last_weight1,layer=1)
 
                 selected_2=select_layer_2(step2,grp_index_2.cpu().numpy(),grp_bat_index_2.cpu().numpy(),intent_index_2.cpu().numpy(),node_candidate2,cur_batch_size,args)
@@ -669,7 +669,7 @@ def evaluate_gen_gorecdial(test_loader:DataLoader, model:ProRec, graph_data, bow
                 step1i,last_weight1i,_,_=model.inference_gorecdial(selected,tokenized_dialog,all_length,maxlen,init_hidden,edge_type,edge_index,mention_index,mention_batch_index,sel_index_1i,batch_index_1i,grp_index_1i,grp_bat_index_1i,last_index_1i,score_mask1i,word_index,word_batch_index,bow_embed,rec_index,rec_batch_index)
                 step_grp=grp_index_1i.cpu().numpy()
 
-                sel_index_2,grp_index_2,batch_index_2,intent_index_2,grp_bat_index_2,last_index_2,score_mask_2,node_candidate2,selected_1,all_split=select_layer_1(args['nodes'],step1i,step_grp,selected,node_candidate1i,test_batch.label_1,test_batch.mention_history,args,test_batch.rec_cand)
+                sel_index_2,grp_index_2,batch_index_2,intent_index_2,grp_bat_index_2,last_index_2,score_mask_2,node_candidate2,selected_1,all_split=select_layer_1(args['nodes'],step1i,step_grp,selected,node_candidate1i,test_batch.label_1,test_batch.mention_history,args,test_batch.rec_cand,dataset="gorecdial")
 
                 if grp_index_2.size()[0]!=0:
                     step2,_,_=model.inference_gorecdial(intent_index_2,tokenized_dialog,all_length,maxlen,init_hidden,edge_type,edge_index,mention_index,mention_batch_index,sel_index_2,batch_index_2,grp_index_2,grp_bat_index_2,last_index_2,score_mask_2,word_index,word_batch_index,last_weights=last_weight1i,layer=1)
