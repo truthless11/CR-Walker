@@ -21,7 +21,7 @@ Cite this paper:
 
 ## Data
 
-- [google link](https://drive.google.com/drive/folders/1Jg65ibsj_2tybZyCQnGD7y9a80FlCX61?usp=sharing) to raw data and our model checkpoints (generation models will be released soon!). Table of content: 
+- [google link](https://drive.google.com/drive/folders/1Jg65ibsj_2tybZyCQnGD7y9a80FlCX61?usp=sharing) to raw data and our model checkpoints. Table of content: 
 
   ```
   CR-Walker
